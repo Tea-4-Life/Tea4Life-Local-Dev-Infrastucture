@@ -1,0 +1,141 @@
+/* Phông chữ hệ thống */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Căn giữa trang và xóa khoảng trống thừa */
+.login-pf-page {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Nền Gradient từ Emerald sang White/Green */
+body {
+    background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 50%, #f0fdf4 100%) !important; /* Emerald-50 to White to Green-50 */
+    font-family: 'Inter', sans-serif !important;
+    overflow-x: hidden;
+}
+
+/* Hiệu ứng đốm màu Blur (Decor) giống React AuthPage */
+body::before {
+    content: "";
+    position: fixed;
+    top: -100px;
+    left: -100px;
+    width: 450px;
+    height: 450px;
+    background: rgba(16, 185, 129, 0.15); /* Emerald-500 với độ mờ thấp */
+    filter: blur(100px);
+    z-index: -1;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    bottom: -100px;
+    right: -100px;
+    width: 450px;
+    height: 450px;
+    background: rgba(34, 197, 94, 0.15); /* Green-500 với độ mờ thấp */
+    filter: blur(100px);
+    z-index: -1;
+}
+
+/* Khung Card chính */
+.card-pf {
+    border-radius: 1.25rem !important;
+    border: 1px solid #d1fae5 !important; /* Emerald-100 */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.95) !important; /* Trắng hơi trong suốt */
+    padding: 2rem !important;
+    max-width: 420px !important;
+    width: 90% !important;
+    backdrop-filter: blur(10px); /* Hiệu ứng kính mờ cho Card */
+}
+
+/* Logo Tea4Life */
+#kc-header { display: none !important; }
+.card-pf::before {
+    content: "";
+    display: block;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 0.75rem auto;
+    background-image: url('../img/leaf-logo.png') !important;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Tiêu đề trang (Login/Register) */
+#kc-page-title {
+    color: #064e3b !important; /* Emerald-900 */
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 1.25rem !important;
+}
+
+/* Label & Input */
+label {
+    color: #065f46 !important; /* Emerald-800 */
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+}
+
+.form-control {
+    border-radius: 0.5rem !important;
+    border: 1px solid #d1fae5 !important;
+    background-color: #f9fafb !important;
+}
+
+.form-control:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Nút bấm (Màu xanh đậm theo ảnh của bạn) */
+.btn-primary {
+    background-color: #004680 !important; 
+    border: none !important;
+    border-radius: 0.5rem !important;
+    height: 45px !important;
+    font-weight: 600 !important;
+    transition: transform 0.2s !important;
+}
+
+.btn-primary:hover {
+    transform: scale(1.02);
+    filter: brightness(110%);
+}
+
+/* Xử lý phần đen thừa và khoảng cách trang Register */
+#kc-info, .login-pf-signup, #kc-registration {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-top: 1rem !important;
+}
+
+#kc-form-buttons {
+    margin-top: 1.25rem !important; /* Thu hẹp khoảng cách nút */
+}
+
+/* Dấu sao đỏ */
+.required {
+    color: #ef4444 !important;
+    font-weight: bold !important;
+}
+
+/* Link Back to login */
+#kc-form-options a {
+    color: #059669 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+#kc-form-options a:hover {
+    text-decoration: underline !important;
+}

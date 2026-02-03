@@ -26,6 +26,7 @@ services:
     volumes:
       - ./realm-export.json:/opt/keycloak/data/import/realm.json
       - ./providers:/opt/keycloak/providers
+      - ./themes:/opt/keycloak/themes:z
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://keycloak-postgres-db:5432/keycloak
@@ -35,6 +36,8 @@ services:
       KC_HTTP_ENABLED: "true"
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin123
+      KC_THEME_CACHE_ANYWHERE: false
+      KC_THEME_CACHE_THEMES: false
     networks:
       - tea4life-network
 
