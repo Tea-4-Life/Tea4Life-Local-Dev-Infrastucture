@@ -85,11 +85,10 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/live HTTP/1.1\r\nhost: localhost\r\nConnection: close\r\n\r\n' >&3 && cat <&3 | grep 'HTTP/1.1 200 OK' || exit 1" ]
-      interval: 10s
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/health/live || exit 1" ]
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 40s
     command: start-dev --import-realm
     ports:
       - "9000:8080"
