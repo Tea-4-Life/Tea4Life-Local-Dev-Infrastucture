@@ -25,7 +25,7 @@ public class KafkaEventListenerProviderFactory implements EventListenerProviderF
     private final String BOOTSTRAP_SERVERS_KEY = "bootstrapServers";
     private final String TOPIC_KEY = "topic";
 
-    private final String BOOTSTRAP_SERVERS_DEFAULT_VALUE = "broker:19092";
+    private final String BOOTSTRAP_SERVERS_DEFAULT_VALUE = "kafka:19092";
     private final String TOPIC_KEY_DEFAULT_VALUE = "user-registration";
 
     /**
