@@ -1,39 +1,72 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
+# ====================
+# Logs
+# ====================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
-*.iml
-*.ipr
+# ====================
+# Dependency directories
+# ====================
+node_modules/
 
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# ====================
+# Build output (Node.js, Frontend)
+# ====================
+dist/
+dist-ssr/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+out/
 
-### VS Code ###
+# ====================
+# IntelliJ IDEA
+# ====================
+.idea/
+*.iml
+*.iws
+
+# ====================
+# Build output (Java/Maven)
+# ====================
+target/
+*.class
+
+# ====================
+# Local environment files
+# ====================
+*.local
+.env
+.env.*
+
+# ====================
+# Ignore properties file
+# ====================
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties
+src/main/resources/application-cloud.properties
+
+# ====================
+# Editor directories and files
+# ====================
 .vscode/
-
-### Mac OS ###
+!.vscode/extensions.json
+.idea/
 .DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ====================
+# OS generated files
+# ====================
+Thumbs.db
+Desktop.ini
+
+
+
