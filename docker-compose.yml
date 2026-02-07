@@ -77,6 +77,20 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.2
     container_name: tea4life-keycloak-container
+    entrypoint: [ "/bin/bash", "-c" ]
+    command: >
+      "/opt/keycloak/bin/kc.sh build --health-enabled=true &&
+       /opt/keycloak/bin/kc.sh start-dev --import-realm"
+    volumes:
+      - ./realm-export.json:/opt/keycloak/data/import/realm.json
+      - ./providers:/opt/keycloak/providers
+      - ./themes:/opt/keycloak/themes:z
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --head -fsS http://localhost:9000/health/ready | echo $?" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
     depends_on:
       keycloak-postgres-db:
         condition: service_healthy
@@ -84,13 +98,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: start-dev --import-realm --health-enabled=true
     ports:
       - "9000:8080"
-    volumes:
-      - ./realm-export.json:/opt/keycloak/data/import/realm.json
-      - ./providers:/opt/keycloak/providers
-      - ./themes:/opt/keycloak/themes:z
     environment:
       # Database
       KC_DB: postgres
@@ -100,11 +109,12 @@ services:
       # Keycloak
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USERNAME}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
-      KC_THEME_CACHE_ANYWHERE: false
-      KC_THEME_CACHE_THEMES: false
+      KC_METRICS_ENABLED: "true"
+      KC_HTTP_HEALTH_PORT: 9000
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
     networks:
       - tea4life-network
 
@@ -115,11 +125,7 @@ services:
     image: huynhducphu2502/tea4life-discovery-server:latest
     container_name: tea4life-discovery-server-container
     depends_on:
-      keycloak-postgres-db:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-      redis:
+      keycloak:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1" ]
@@ -158,8 +164,6 @@ services:
       # Kafka
       - KAFKA_BOOTSTRAP_SERVER=${KAFKA_BOOTSTRAP_SERVER}
       - STORAGE_SERVICE_KAFKA_CONSUMER_GROUP_ID=${STORAGE_SERVICE_KAFKA_CONSUMER_GROUP_ID}
-      # CORS
-      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       # Discovery Server
       - EUREKA_SERVICE_URL=${EUREKA_SERVICE_URL}
     networks:
@@ -184,8 +188,8 @@ services:
       - "8888:8888"
     environment:
       # Keycloak
-      - KEYCLOAK_ISSUER-URI=${KEYCLOAK_ISSUER-URI}
-      - KEYCLOAK_JWT-SET-URI=${KEYCLOAK_JWT-SET-URI}
+      - KEYCLOAK_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
+      - KEYCLOAK_JWT_SET_URI=${KEYCLOAK_JWT_SET_URI}
       # CORS
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       # Discovery Server
