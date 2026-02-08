@@ -150,39 +150,40 @@ services:
       - "8761:8761"
     environment:
       - JAVA_OPTS=-Xms128m -Xmx192m -XX:+UseG1GC
+      - EUREKA_INSTANCE_HOSTNAME=${EUREKA_INSTANCE_HOSTNAME}
     networks:
       - tea4life-network
   
   #  =================================================================
   #  Storage Service [Priority Order 4]
   #  =================================================================  
-  storage-service:
-    image: huynhducphu2502/tea4life-storage-service:latest
-    container_name: tea4life-storage-service-container
-    depends_on:
-      discovery-server:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1" ]
-      start_period: 10s
-      retries: 10
-      timeout: 5s
-      interval: 10s
-    ports:
-      - "8081:8081"
-    environment:
-      # AWS
-      - STORAGE_SERVICE_S3_ACCESS_KEY=${STORAGE_SERVICE_S3_ACCESS_KEY}
-      - STORAGE_SERVICE_S3_SECRET_KEY=${STORAGE_SERVICE_S3_SECRET_KEY}
-      - STORAGE_SERVICE_S3_REGION=${STORAGE_SERVICE_S3_REGION}
-      - STORAGE_SERVICE_S3_BUCKET_NAME=${STORAGE_SERVICE_S3_BUCKET_NAME}
-      # Kafka
-      - KAFKA_BOOTSTRAP_SERVER=${KAFKA_BOOTSTRAP_SERVER}
-      - STORAGE_SERVICE_KAFKA_CONSUMER_GROUP_ID=${STORAGE_SERVICE_KAFKA_CONSUMER_GROUP_ID}
-      # Discovery Server
-      - EUREKA_SERVICE_URL=${EUREKA_SERVICE_URL}
-    networks:
-      - tea4life-network
+  #  storage-service:
+  #    image: huynhducphu2502/tea4life-storage-service:latest
+  #    container_name: tea4life-storage-service-container
+  #    depends_on:
+  #      discovery-server:
+  #        condition: service_healthy
+  #    healthcheck:
+  #      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1" ]
+  #      start_period: 10s
+  #      retries: 10
+  #      timeout: 5s
+  #      interval: 10s
+  #    ports:
+  #      - "8081:8081"
+  #    environment:
+  #      # AWS
+  #      - STORAGE_SERVICE_S3_ACCESS_KEY=${STORAGE_SERVICE_S3_ACCESS_KEY}
+  #      - STORAGE_SERVICE_S3_SECRET_KEY=${STORAGE_SERVICE_S3_SECRET_KEY}
+  #      - STORAGE_SERVICE_S3_REGION=${STORAGE_SERVICE_S3_REGION}
+  #      - STORAGE_SERVICE_S3_BUCKET_NAME=${STORAGE_SERVICE_S3_BUCKET_NAME}
+  #      # Kafka
+  #      - KAFKA_BOOTSTRAP_SERVER=${KAFKA_BOOTSTRAP_SERVER}
+  #      - STORAGE_SERVICE_KAFKA_CONSUMER_GROUP_ID=${STORAGE_SERVICE_KAFKA_CONSUMER_GROUP_ID}
+  #      # Discovery Server
+  #      - EUREKA_SERVICE_URL=${EUREKA_SERVICE_URL}
+  #    networks:
+  #      - tea4life-network
 
   #  =================================================================
   #  Gateway Server [Priority Order 5]
@@ -195,7 +196,7 @@ services:
         limits:
           memory: 320M
     depends_on:
-      storage-service:
+      discovery-server:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1" ]
