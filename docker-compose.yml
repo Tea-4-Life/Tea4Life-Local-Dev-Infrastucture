@@ -27,6 +27,8 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_NUM_PARTITIONS: 3
+    volumes:
+      - kafka_data:/var/lib/kafka/data
     networks:
       - tea4life-network
 
@@ -77,6 +79,10 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.5.2
     container_name: tea4life-keycloak-container
+    deploy:
+      resources:
+        limits:
+          memory: 750M
     entrypoint: [ "/bin/bash", "-c" ]
     command: >
       "/opt/keycloak/bin/kc.sh build --health-enabled=true &&
@@ -86,7 +92,7 @@ services:
       - ./providers:/opt/keycloak/providers
       - ./themes:/opt/keycloak/themes:z
     healthcheck:
-      test: [ "CMD-SHELL", "curl --head -fsS http://localhost:9000/health/ready | echo $?" ]
+      test: [ "CMD-SHELL", "curl --head -fsS http://localhost:9001/health/ready | echo $?" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -100,21 +106,24 @@ services:
         condition: service_healthy
     ports:
       - "9000:8080"
+      - "9001:9001"
     environment:
       # Database
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://keycloak-postgres-db:5432/keycloak
-      KC_DB_USERNAME: ${KEYCLOAK_DB_POSTGRES_USER}
-      KC_DB_PASSWORD: ${KEYCLOAK_DB_POSTGRES_PASSWORD}
-      # Keycloak
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USERNAME}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_HTTP_ENABLED: "true"
-      KC_HEALTH_ENABLED: "true"
-      KC_METRICS_ENABLED: "true"
-      KC_HTTP_HEALTH_PORT: 9000
-      KC_HOSTNAME_STRICT: "false"
-      KC_HOSTNAME_STRICT_HTTPS: "false"
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://keycloak-postgres-db:5432/keycloak
+      - KC_DB_USERNAME=${KEYCLOAK_DB_POSTGRES_USER}
+      - KC_DB_PASSWORD=${KEYCLOAK_DB_POSTGRES_PASSWORD}
+      # Admin Credentials
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USERNAME}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      # Heath & Metrics
+      - KC_METRICS_ENABLED=true
+      - KC_HTTP_HEALTH_PORT=9001
+      # Network
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_HTTPS=false
+      - JAVA_OPTS_APPEND=-Xms256m -Xmx512m
     networks:
       - tea4life-network
 
@@ -124,6 +133,10 @@ services:
   discovery-server:
     image: huynhducphu2502/tea4life-discovery-server:latest
     container_name: tea4life-discovery-server-container
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     depends_on:
       keycloak:
         condition: service_healthy
@@ -135,6 +148,8 @@ services:
       interval: 10s
     ports:
       - "8761:8761"
+    environment:
+      - JAVA_OPTS=-Xms128m -Xmx192m -XX:+UseG1GC
     networks:
       - tea4life-network
   
@@ -148,7 +163,7 @@ services:
       discovery-server:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1" ]
+      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1" ]
       start_period: 10s
       retries: 10
       timeout: 5s
@@ -156,7 +171,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      # AWS S3
+      # AWS
       - STORAGE_SERVICE_S3_ACCESS_KEY=${STORAGE_SERVICE_S3_ACCESS_KEY}
       - STORAGE_SERVICE_S3_SECRET_KEY=${STORAGE_SERVICE_S3_SECRET_KEY}
       - STORAGE_SERVICE_S3_REGION=${STORAGE_SERVICE_S3_REGION}
@@ -175,6 +190,10 @@ services:
   gateway-server:
     image: huynhducphu2502/tea4life-gateway-server:latest
     container_name: tea4life-gateway-server-container
+    deploy:
+      resources:
+        limits:
+          memory: 320M
     depends_on:
       storage-service:
         condition: service_healthy
@@ -194,6 +213,8 @@ services:
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
       # Discovery Server
       - EUREKA_SERVICE_URL=${EUREKA_SERVICE_URL}
+      # JVM
+      - JAVA_OPTS=-Xms128m -Xmx256m -XX:+UseG1GC
     networks:
       - tea4life-network
 
@@ -201,6 +222,7 @@ services:
 volumes:
   keycloak_db_data:
   redis_db_data:
+  kafka_data:
 
 networks:
   tea4life-network:
