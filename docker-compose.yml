@@ -42,26 +42,6 @@ services:
       - tea4life-network
 
   #  =================================================================
-  #  Redis [Priority Order 1]
-  #  =================================================================
-  redis:
-    image: redis:latest
-    container_name: tea4life-redis-container
-    healthcheck:
-      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 5s
-    ports:
-      - "6379:6379"
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-    volumes:
-      - redis_db_data:/data
-    networks:
-      - tea4life-network
-
-  #  =================================================================
   #  Keycloak [Priority Order 2]
   #  =================================================================
   keycloak:
@@ -87,8 +67,6 @@ services:
       start_period: 40s
     depends_on:
       kafka:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     ports:
       - "9000:8080"
@@ -207,7 +185,6 @@ services:
 
 
 volumes:
-  redis_db_data:
   kafka_data:
 
 networks:
