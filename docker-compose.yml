@@ -44,55 +44,55 @@ services:
   #  =================================================================
   #  Keycloak [Priority Order 2]
   #  =================================================================
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.5.2
-    container_name: tea4life-keycloak-container
-    deploy:
-      resources:
-        limits:
-          memory: 750M
-    entrypoint: [ "/bin/bash", "-c" ]
-    command: >
-      "/opt/keycloak/bin/kc.sh build --health-enabled=true &&
-       /opt/keycloak/bin/kc.sh start-dev --import-realm --spi-events-listener-tea4life-kafka-listener-bootstrapServers=${KAFKA_BOOTSTRAP_SERVER} --spi-events-listener-tea4life-kafka-listener-topic=${KEYCLOAK_KAFKA_TOPIC}"
-    volumes:
-      - ./realm-export.json:/opt/keycloak/data/import/realm.json
-      - ./providers:/opt/keycloak/providers
-      - ./themes:/opt/keycloak/themes:z
-    healthcheck:
-      test: [ "CMD-SHELL", "curl --head -fsS http://localhost:9001/health/ready | echo $?" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
-    #    depends_on:
-    #      kafka:
-    #        condition: service_healthy
-    ports:
-      - "9000:8080"
-      - "9001:9001"
-    environment:
-      # Database
-      KC_DB: mariadb
-      KC_DB_URL: jdbc:mariadb://${KEYCLOAK_DB_MARIADB_HOST}:${KEYCLOAK_DB_MARIADB_PORT}/${KEYCLOAK_DB_MARIADB_NAME}
-      KC_DB_USERNAME: ${KEYCLOAK_DB_MARIADB_USER}
-      KC_DB_PASSWORD: ${KEYCLOAK_DB_MARIADB_PASSWORD}
-      # Keycloak
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USERNAME}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      # SPI Config
-      KAFKA_BOOTSTRAP_SERVER: ${KAFKA_BOOTSTRAP_SERVER}
-      KEYCLOAK_KAFKA_TOPIC: ${KEYCLOAK_KAFKA_TOPIC}
-      # Heath & Metrics
-      KC_METRICS_ENABLED: "true"
-      KC_HTTP_HEALTH_PORT: "9001"
-      # Network
-      KC_HTTP_ENABLED: "true"
-      KC_HOSTNAME_STRICT: "false"
-      KC_HOSTNAME_STRICT_HTTPS: "false"
-      JAVA_OPTS_APPEND: -Xms256m -Xmx512m
-    networks:
-      - tea4life-network
+  #  keycloak:
+  #    image: quay.io/keycloak/keycloak:26.5.2
+  #    container_name: tea4life-keycloak-container
+  #    deploy:
+  #      resources:
+  #        limits:
+  #          memory: 750M
+  #    entrypoint: [ "/bin/bash", "-c" ]
+  #    command: >
+  #      "/opt/keycloak/bin/kc.sh build --health-enabled=true &&
+  #       /opt/keycloak/bin/kc.sh start-dev --import-realm --spi-events-listener-tea4life-kafka-listener-bootstrapServers=${KAFKA_BOOTSTRAP_SERVER} --spi-events-listener-tea4life-kafka-listener-topic=${KEYCLOAK_KAFKA_TOPIC}"
+  #    volumes:
+  #      - ./realm-export.json:/opt/keycloak/data/import/realm.json
+  #      - ./providers:/opt/keycloak/providers
+  #      - ./themes:/opt/keycloak/themes:z
+  #    healthcheck:
+  #      test: [ "CMD-SHELL", "curl --head -fsS http://localhost:9001/health/ready | echo $?" ]
+  #      interval: 30s
+  #      timeout: 10s
+  #      retries: 5
+  #      start_period: 40s
+  #    #    depends_on:
+  #    #      kafka:
+  #    #        condition: service_healthy
+  #    ports:
+  #      - "9000:8080"
+  #      - "9001:9001"
+  #    environment:
+  #      # Database
+  #      KC_DB: mariadb
+  #      KC_DB_URL: jdbc:mariadb://${KEYCLOAK_DB_MARIADB_HOST}:${KEYCLOAK_DB_MARIADB_PORT}/${KEYCLOAK_DB_MARIADB_NAME}
+  #      KC_DB_USERNAME: ${KEYCLOAK_DB_MARIADB_USER}
+  #      KC_DB_PASSWORD: ${KEYCLOAK_DB_MARIADB_PASSWORD}
+  #      # Keycloak
+  #      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USERNAME}
+  #      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+  #      # SPI Config
+  #      KAFKA_BOOTSTRAP_SERVER: ${KAFKA_BOOTSTRAP_SERVER}
+  #      KEYCLOAK_KAFKA_TOPIC: ${KEYCLOAK_KAFKA_TOPIC}
+  #      # Heath & Metrics
+  #      KC_METRICS_ENABLED: "true"
+  #      KC_HTTP_HEALTH_PORT: "9001"
+  #      # Network
+  #      KC_HTTP_ENABLED: "true"
+  #      KC_HOSTNAME_STRICT: "false"
+  #      KC_HOSTNAME_STRICT_HTTPS: "false"
+  #      JAVA_OPTS_APPEND: -Xms256m -Xmx512m
+  #    networks:
+  #      - tea4life-network
 
   #  =================================================================
   #  Discovery Server [Priority Order 3]
@@ -104,9 +104,9 @@ services:
       resources:
         limits:
           memory: 256M
-    depends_on:
-      keycloak:
-        condition: service_healthy
+    #    depends_on:
+    #      keycloak:
+    #        condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1" ]
       start_period: 10s
