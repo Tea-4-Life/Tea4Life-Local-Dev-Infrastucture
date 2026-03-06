@@ -72,8 +72,24 @@ public class KafkaEventListenerProviderFactory implements EventListenerProviderF
     @Override
     public void init(org.keycloak.Config.Scope scope) {
 
-        String bootstrapServers = scope.get(BOOTSTRAP_SERVERS_KEY, BOOTSTRAP_SERVERS_DEFAULT_VALUE);
-        this.topic = scope.get(TOPIC_KEY, TOPIC_KEY_DEFAULT_VALUE);
+                String bootstrapServers = scope.get(BOOTSTRAP_SERVERS_KEY);
+        String configuredTopic = scope.get(TOPIC_KEY);
+
+        if (bootstrapServers == null || bootstrapServers.isBlank()) {
+            bootstrapServers = System.getenv("KAFKA_BOOTSTRAP_SERVER");
+        }
+        if (bootstrapServers == null || bootstrapServers.isBlank()) {
+            bootstrapServers = BOOTSTRAP_SERVERS_DEFAULT_VALUE;
+        }
+
+        if (configuredTopic == null || configuredTopic.isBlank()) {
+            configuredTopic = System.getenv("KEYCLOAK_KAFKA_TOPIC");
+        }
+        if (configuredTopic == null || configuredTopic.isBlank()) {
+            configuredTopic = TOPIC_KEY_DEFAULT_VALUE;
+        }
+
+        this.topic = configuredTopic;
 
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -112,3 +128,4 @@ public class KafkaEventListenerProviderFactory implements EventListenerProviderF
 
 
 }
+
