@@ -104,7 +104,7 @@ services:
   #      - "8088:8080"   # Zeebe REST
   #      - "9600:9600"   # management
   #    environment:
-  #      ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE: none
+  #      SPRING_APPLICATION_JSON: '{"camunda":{"data":{"secondary-storage":{"type":"none"}},"security":{"authentication":{"unprotectedApi":true},"authorizations":{"enabled":false}}}}'
   #      ZEEBE_BROKER_GATEWAY_ENABLE: "true"
   #      ZEEBE_BROKER_GATEWAY_REST_ENABLED: "true"
   #      ZEEBE_BROKER_NETWORK_HOST: 0.0.0.0
