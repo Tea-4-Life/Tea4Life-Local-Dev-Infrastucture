@@ -130,7 +130,11 @@ services:
     #      keycloak:
     #        condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1" ]
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1",
+        ]
       start_period: 10s
       retries: 10
       timeout: 5s
@@ -141,10 +145,10 @@ services:
       EUREKA_INSTANCE_HOSTNAME: ${EUREKA_INSTANCE_HOSTNAME}
     networks:
       - tea4life-network
-  
+
   #  =================================================================
   #  Storage Service [Priority Order 5]
-  #  =================================================================  
+  #  =================================================================
   storage-service:
     image: huynhducphu2502/tea4life-storage-service:latest
     container_name: tea4life-storage-service-container
@@ -152,7 +156,11 @@ services:
       discovery-server:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1" ]
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1",
+        ]
       start_period: 10s
       retries: 10
       timeout: 5s
@@ -190,7 +198,11 @@ services:
       discovery-server:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1" ]
+      test:
+        [
+          "CMD-SHELL",
+          "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1",
+        ]
       start_period: 10s
       retries: 10
       timeout: 5s
@@ -211,10 +223,10 @@ services:
       STORAGE_SERVICE_URL: ${STORAGE_SERVICE_URL}
       USER_SERVICE_URL: ${USER_SERVICE_URL}
       PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
+      ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
       WORKFLOW_SERVICE_URL: ${WORKFLOW_SERVICE_URL}
     networks:
       - tea4life-network
-
 
 volumes:
   kafka_data:
@@ -223,6 +235,3 @@ volumes:
 networks:
   tea4life-network:
     driver: bridge
-
-
-
