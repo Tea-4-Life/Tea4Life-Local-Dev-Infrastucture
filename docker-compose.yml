@@ -67,6 +67,19 @@ services:
       EUREKA_SERVICE_URL: ${EUREKA_SERVICE_URL}
     networks:
       - tea4life-network
+  redis-server:
+    image: redis:6.2-alpine
+    container_name: tea4life-redis-container
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - tea4life-network
 
   #  =================================================================
   #  Gateway Server [Priority Order 6]
@@ -81,6 +94,8 @@ services:
     depends_on:
       discovery-server:
         condition: service_healthy
+      redis-server:                   
+        condition: service_healthy
     healthcheck:
       test:
         [
@@ -94,6 +109,9 @@ services:
     ports:
       - "8888:8888"
     environment:
+      # Redis (Ghi đè cấu hình trong application.properties)
+      SPRING_DATA_REDIS_HOST: redis-server 
+      SPRING_DATA_REDIS_PORT: 6379
       # Keycloak
       KEYCLOAK_ISSUER_URI: ${KEYCLOAK_ISSUER_URI}
       KEYCLOAK_JWT_SET_URI: ${KEYCLOAK_JWT_SET_URI}
