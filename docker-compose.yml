@@ -67,6 +67,7 @@ services:
       EUREKA_SERVICE_URL: ${EUREKA_SERVICE_URL}
     networks:
       - tea4life-network
+  
   redis-server:
     image: redis:6.2-alpine
     container_name: tea4life-redis-container
@@ -127,9 +128,7 @@ services:
       PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
       BLOG_SERVICE_URL: ${BLOG_SERVICE_URL}
       ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
-      LOGISTICS_SERVICE_URL: ${LOGISTICS_SERVICE_URL}
       AUDIT_SERVICE_URL: ${AUDIT_SERVICE_URL}
-      WORKFLOW_SERVICE_URL: ${WORKFLOW_SERVICE_URL}
       RECOMMENDATION_SERVICE_URL: ${RECOMMENDATION_SERVICE_URL}
     networks:
       - tea4life-network
