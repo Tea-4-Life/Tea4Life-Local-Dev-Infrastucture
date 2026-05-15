@@ -496,11 +496,15 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
+        "https://portal.tea4life.click/*",
         "https://www.tea4life.click/*",
-        "http://localhost:3000/*"
+        "http://localhost:3000/*",
+        "http://localhost:3001/*"
       ],
       "webOrigins": [
         "https://www.tea4life.click",
+        "https://portal.tea4life.click",
+        "http://localhost:3001",
         "http://localhost:3000"
       ],
       "notBefore": 0,
@@ -520,7 +524,7 @@
         "backchannel.logout.session.required": "true",
         "standard.token.exchange.enabled": "false",
         "frontchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "https://www.tea4life.click/*##http://localhost:3000/*",
+        "post.logout.redirect.uris": "https://www.tea4life.click/*##http://localhost:3000/*##http://localhost:3001/*##https://portal.tea4life.click/*",
         "display.on.consent.screen": "false",
         "oauth2.device.authorization.grant.enabled": "false",
         "pkce.code.challenge.method": "S256",
